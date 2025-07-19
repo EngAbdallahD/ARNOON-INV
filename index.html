@@ -388,14 +388,13 @@
 
         // --- Firebase Firestore Logic ---
         function setupAppForUser(userId) {
-            // **CHANGE**: Data is now stored in a public path, shared by all users of this app.
             const collectionPath = `artifacts/${appId}/public/data/inventory`;
+            const itemsCollection = collection(db, collectionPath); // **FIX**: Defined the collection here.
             
-            // Display User ID for debugging, but it no longer determines the data path.
             userIdDisplay.textContent = `User ID: ${userId}`;
 
             // Firestore real-time listener
-            onSnapshot(itemsCollection, (snapshot) => {
+            onSnapshot(itemsCollection, (snapshot) => { // **FIX**: Now uses the defined collection.
                 inventoryData = snapshot.docs.map(doc => ({
                     docId: doc.id,
                     ...doc.data()
@@ -423,7 +422,6 @@
                 };
 
                 try {
-                    const itemsCollection = collection(db, collectionPath);
                     if (docId) { // Editing existing item
                         const itemRef = doc(db, collectionPath, docId);
                         await setDoc(itemRef, itemData, { merge: true });
@@ -449,8 +447,6 @@
 
                 const docId = target.dataset.id;
                 if (!docId) return;
-                
-                const itemsCollection = collection(db, collectionPath);
 
                 if (target.classList.contains('delete-btn')) {
                     showConfirm('تأكيد الحذف', 'هل أنت متأكد من رغبتك في حذف هذا الصنف؟', async (confirmed) => {
