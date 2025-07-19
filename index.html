@@ -52,7 +52,6 @@
 
         <!-- Header -->
         <header class="mb-8 flex flex-col sm:flex-row justify-center items-center gap-4 text-center">
-            <!-- تم تغيير الرابط ليعمل محلياً -->
             <img src="logoArnoon.png" alt="شعار مطبعة ارنون" class="h-16 sm:h-20 w-auto">
             <div>
                 <h1 class="text-3xl sm:text-4xl font-bold text-gray-800">مطبعة ارنون</h1>
@@ -111,7 +110,6 @@
         
         <!-- Footer with Logo -->
         <footer class="mt-12 flex justify-center">
-             <!-- تم تغيير الرابط ليعمل محلياً -->
             <img src="logoArnoon.png" alt="شعار مطبعة ارنون" class="h-12 w-auto">
         </footer>
 
@@ -390,10 +388,10 @@
 
         // --- Firebase Firestore Logic ---
         function setupAppForUser(userId) {
-            const collectionPath = `artifacts/${appId}/users/${userId}/inventory`;
-            const itemsCollection = collection(db, collectionPath);
+            // **CHANGE**: Data is now stored in a public path, shared by all users of this app.
+            const collectionPath = `artifacts/${appId}/public/data/inventory`;
             
-            // Display User ID
+            // Display User ID for debugging, but it no longer determines the data path.
             userIdDisplay.textContent = `User ID: ${userId}`;
 
             // Firestore real-time listener
@@ -425,6 +423,7 @@
                 };
 
                 try {
+                    const itemsCollection = collection(db, collectionPath);
                     if (docId) { // Editing existing item
                         const itemRef = doc(db, collectionPath, docId);
                         await setDoc(itemRef, itemData, { merge: true });
@@ -450,6 +449,8 @@
 
                 const docId = target.dataset.id;
                 if (!docId) return;
+                
+                const itemsCollection = collection(db, collectionPath);
 
                 if (target.classList.contains('delete-btn')) {
                     showConfirm('تأكيد الحذف', 'هل أنت متأكد من رغبتك في حذف هذا الصنف؟', async (confirmed) => {
